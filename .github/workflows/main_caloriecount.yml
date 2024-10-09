@@ -21,18 +21,17 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      - name: dotnet publish
+      - name: Build .NET project
+        run: dotnet build --configuration Release
+
+      - name: Publish .NET project
         run: dotnet publish -c Release -o ${{github.workspace}}/myapp
-
-
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{github.workspace}}/myapp
 
   deploy:
     runs-on: windows-latest
@@ -63,5 +62,3 @@ jobs:
           app-name: 'caloriecount'
           slot-name: 'Production'
           package: ${{github.workspace}}/myapp
-
-          
